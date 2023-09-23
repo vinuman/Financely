@@ -50,6 +50,34 @@ const SignIn = ({ signUp, setSignUp }) => {
 
   //Google auth
   function googleAuth() {
+    async function createDoc(user) {
+      setLoading(true);
+      //Make sure that the doc with the uid does not exist
+      if (!user) return;
+
+      const userRef = doc(db, "users", user.uid);
+      const userData = await getDoc(userRef);
+
+      //create a new doc
+      if (!userData.exists()) {
+        try {
+          await setDoc(doc(db, "users", user.uid), {
+            name: user.displayName,
+            email: user.email,
+            photoUrl: user.photoURL ? user.photoURL : "",
+            createdAt: new Date(),
+          });
+          toast.success("User profile created");
+          setLoading(false);
+        } catch (err) {
+          toast.error(err.message);
+          setLoading(false);
+        }
+      } else {
+        /* toast.error("Doc already exists"); */
+        setLoading(false);
+      }
+    }
     setLoading(true);
     try {
       signInWithPopup(auth, provider)
@@ -59,13 +87,12 @@ const SignIn = ({ signUp, setSignUp }) => {
           const token = credential.accessToken;
           // The signed-in user info.
           const user = result.user;
+          createDoc(user);
 
           // IdP data available using getAdditionalUserInfo(result)
-
           // ...
-
           setLoading(false);
-          toast.success("User sign in successfull");
+          toast.success("User sign up successfull");
           navigate("/dashboard");
         })
         .catch((error) => {
@@ -82,7 +109,6 @@ const SignIn = ({ signUp, setSignUp }) => {
       toast.error(err.message);
     }
   }
-
   return (
     <>
       <div className=" p-8 bg-white flex flex-col justify-center  mt-8  w-[90%] lg:w-[40%]  max-w-[500px] mx-auto rounded-lg shadow-xl">
@@ -143,7 +169,7 @@ const SignIn = ({ signUp, setSignUp }) => {
           onClick={googleAuth}
           className="border h-[48px] bg-blue-600 rounded-md text-white mb-2 hover:bg-white hover:text-blue-600 hover:border-blue-600"
         >
-          Log in with Google
+          Sign Up/ Log in with Google
         </button>
         <p
           onClick={() => setSignUp(!signUp)}

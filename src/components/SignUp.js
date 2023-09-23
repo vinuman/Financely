@@ -126,7 +126,7 @@ const SignUp = ({ signUp, setSignUp }) => {
           setLoading(false);
         }
       } else {
-        toast.error("Doc already exists");
+        /* toast.error("Doc already exists"); */
         setLoading(false);
       }
     }
@@ -280,7 +280,7 @@ const SignUp = ({ signUp, setSignUp }) => {
           onClick={googleAuth}
           className="border h-[48px] bg-blue-600 rounded-md text-white mb-2  hover:bg-white hover:text-blue-600 hover:border-blue-600"
         >
-          Sign Up with Google
+          Sign Up/ Log in with Google
         </button>
         <p
           onClick={() => setSignUp(!signUp)}
